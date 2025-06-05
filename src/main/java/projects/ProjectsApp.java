@@ -2,7 +2,6 @@
 package projects;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
@@ -15,12 +14,21 @@ import projects.service.ProjectService;
 public class ProjectsApp {
 	private Scanner scanner = new Scanner(System.in);
 	private ProjectService projectService = new ProjectService();
-
+	private Project curProject;
 	//@formatter:off
+	
+	// adding homework instructions week10 list of projects
 	private List<String> operations = List.of(
-			"1) Add a project" 
+			"1) Add a project",
+			"2) List projects",
+			"3) Select a project"
+			
 			);
 	//@formatter:on
+	
+
+	
+	
 	
 	
 	// method that processes the menu
@@ -46,6 +54,12 @@ public class ProjectsApp {
 				case 1:
 					createProject();
 					break;
+				case 2:
+					listProjects();
+					break;
+				case 3:
+					selectProject();
+					break;
 				
 				default:
 					System.out.println("\n" + selection + "is not a valid selection. Try agian.");
@@ -60,7 +74,29 @@ public class ProjectsApp {
 		}
 	
 	}
+	// this is my select project method
+private void selectProject() {
+		listProjects();
+		Integer projectId = getIntInput("Enter a project ID to select a project");
+		
+		curProject = null;
 	
+// this is to throw an exception if an invalid project ID is entered
+		curProject = projectService.fetchProjectById(projectId);
+		
+}
+
+// this is my list project method
+
+private void listProjects() {
+		List<Project> projects = projectService.fetchAllProjects();
+		
+		System.out.println("\nProjects:");
+		
+		projects.forEach(project -> System.out.println("   " + project.getProjectId() + ": " + project.getProjectName()));
+		
+	}
+
 // method for createProject step 3, part 2 homework	
 	private void createProject() {
 		 String projectName = getStringInput("Enter the project name");
@@ -134,6 +170,13 @@ public class ProjectsApp {
 	for(String line : operations){
 		System.out.println("  " + line);
 	}
+	
+	if(Objects.isNull(curProject)) {
+		System.out.println("\nYou are NOT working with a project.");
+	}
+	else {
+		System.out.println("\nYou ARE working with a project: " + curProject);
+	}
 	}
 	
 	// step 7 writing a method that returns an integer value, "getInput", accepts input from user and converts to integer, its called by getUserSelection
@@ -166,15 +209,11 @@ public class ProjectsApp {
 		
 		return input.isBlank() ? null : input.trim();
 	}
-	
-// the instructions say at this point I should have no compile error, BUT I see LOT a RED on mine	
+		
 		
 	
 	
-// step 9 adding code to process user selection, using a switch statement to process the selection, go back to processUserSelections method	
 	
-	
-// step 10 is to run/test, talk about this when you make the video, ask michael whats up with my error	
 	
 }
 
